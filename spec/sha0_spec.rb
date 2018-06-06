@@ -3,10 +3,6 @@ RSpec.describe SHA0 do
     expect(SHA0::VERSION).not_to be nil
   end
 
-  it "does something useful" do
-    expect(false).to eq(true)
-  end
-
   it "hashes string with sha-0" do
     sha = SHA0::Digest.new()
     expect(sha.hexdigest).to eq('f96cea198ad1dd5617ac084a3d92c6107708c0ef')
