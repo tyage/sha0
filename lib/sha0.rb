@@ -8,7 +8,6 @@ def rotate_left(value, shift)
 end
 
 module SHA0
-  # Your code goes here...
   class Digest
     def initialize()
       @data = ''
@@ -33,13 +32,24 @@ module SHA0
 
       while @data.size >= @block_byte_size
         block = @data[0, @block_byte_size].unpack('N*')
-        process_and_update_hash(block)
+        @hash = process_block(block)
         @data = @data[@block_byte_size, @data.size - @block_byte_size]
       end
 
       self
     end
 
+    def digest
+      current_hash.pack('N*')
+    end
+
+    def hexdigest()
+      current_hash.each_with_object('') do |partial, hash|
+        hash << '0' * (8 - partial.to_s(16).length) + partial.to_s(16)
+      end
+    end
+
+    private
     def padding(message)
       bit_string = message.unpack('B*')[0]
       bit_string += '1'
@@ -53,16 +63,9 @@ module SHA0
       [bit_string].pack('B*').unpack('N*')
     end
 
-    def hexdigest()
+    def current_hash()
       pad_string = padding(@data)
-      new_hash = process_block(pad_string)
-      new_hash.each_with_object('') do |partial, hash|
-        hash << '0' * (8 - partial.to_s(16).length) + partial.to_s(16)
-      end
-    end
-
-    def process_and_update_hash(block)
-      @hash = process_block(block)
+      process_block(pad_string)
     end
 
     def process_block(block)
