@@ -22,7 +22,12 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'sha0'
+
+sha = SHA0::Digest.new()
+puts sha.update('abc').hexdigest # '0164b8a914cd2a5e74c4f7ff082c4d97f1edf880'
+```
 
 ## Development
 
