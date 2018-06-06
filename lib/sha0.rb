@@ -1,5 +1,7 @@
 require "sha0/version"
 
-module Sha0
+module SHA0
   # Your code goes here...
+  class Digest
+  end
 end

@@ -1,3 +1,3 @@
-module Sha0
+module SHA0
   VERSION = "0.1.0"
 end

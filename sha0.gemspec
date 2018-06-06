@@ -5,7 +5,7 @@ require "sha0/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "sha0"
-  spec.version       = Sha0::VERSION
+  spec.version       = SHA0::VERSION
   spec.authors       = ["tyage"]
   spec.email         = ["namatyage@gmail.com"]
 
