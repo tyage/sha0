@@ -12,6 +12,7 @@ module SHA0
   class Digest
     def initialize()
       @data = ''
+      @data_length = 0
       @hash = [
         0x67452301,
         0xefcdab89,
@@ -28,11 +29,12 @@ module SHA0
 
     def update(data)
       @data += data
+      @data_length += data.size
 
       while @data.size >= @block_byte_size
         block = @data[0, @block_byte_size].unpack('N*')
         process_and_update_hash(block)
-        @data = @data[@block_byte_size, @data.length - @block_byte_size]
+        @data = @data[@block_byte_size, @data.size - @block_byte_size]
       end
 
       self
@@ -40,12 +42,14 @@ module SHA0
 
     def padding(message)
       bit_string = message.unpack('B*')[0]
-      message_length = bit_string.length
       bit_string += '1'
       while ((448 % 512) != (bit_string.length % 512)) do
         bit_string += '0'
       end
-      bit_string += (('0' * (64 - message_length.to_s(2).length)) + message_length.to_s(2))
+
+      data_length_bit = (@data_length * 8).to_s(2)
+      bit_string += '0' * (64 - data_length_bit.length) + data_length_bit
+
       [bit_string].pack('B*').unpack('N*')
     end
 
