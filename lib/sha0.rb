@@ -21,10 +21,20 @@ module SHA0
       ]
       @rounds = 80
       @tmp = []
+      @unit_size = 4
+      @block_size = 16
+      @block_byte_size = @block_size * @unit_size
     end
 
     def update(data)
       @data += data
+
+      while @data.size >= @block_byte_size
+        block = @data[0, @block_byte_size].unpack('N*')
+        process_and_update_hash(block)
+        @data = @data[@block_byte_size, @data.length - @block_byte_size]
+      end
+
       self
     end
 
@@ -40,22 +50,15 @@ module SHA0
     end
 
     def hexdigest()
-      @hash = [
-        0x67452301,
-        0xefcdab89,
-        0x98badcfe,
-        0x10325476,
-        0xc3d2e1f0
-      ]
-
       pad_string = padding(@data)
-      chunks = (pad_string.length / 16).times.collect { |i| pad_string[i * 16, 16] }
-      chunks.each do |chunk|
-        process_block(chunk)
-      end
-      @hash.each_with_object('') do |partial, hash|
+      new_hash = process_block(pad_string)
+      new_hash.each_with_object('') do |partial, hash|
         hash << '0' * (8 - partial.to_s(16).length) + partial.to_s(16)
       end
+    end
+
+    def process_and_update_hash(block)
+      @hash = process_block(block)
     end
 
     def process_block(block)
@@ -88,8 +91,8 @@ module SHA0
         ]
       end
 
-      working_vars.each_with_index { |a, i|
-        @hash[i] = (@hash[i] + a) & 0xffffffff
+      working_vars.map.with_index { |var, i|
+        (@hash[i] + var) & 0xffffffff
       }
     end
   end

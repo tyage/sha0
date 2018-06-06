@@ -7,5 +7,6 @@ RSpec.describe SHA0 do
     sha = SHA0::Digest.new()
     expect(sha.hexdigest).to eq('f96cea198ad1dd5617ac084a3d92c6107708c0ef')
     expect(sha.update('abc').hexdigest).to eq('0164b8a914cd2a5e74c4f7ff082c4d97f1edf880')
+    expect(sha.update('abc' * 63).hexdigest).to eq('2b7e211b5134cc340b96ac9fbb9112ebbe3114b6')
   end
 end
